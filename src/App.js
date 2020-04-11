@@ -7,9 +7,8 @@ import {
   Text,
   StatusBar,
   StyleSheet,
+  TouchableOpacity
 } from "react-native";
-
-import Likes from './components/Likes'
 
 import api from './services/api'
 
@@ -25,6 +24,20 @@ export default function App() {
     loadRepositories()
   }, [])
 
+
+  async function handleLikeRepository(id) {
+    const {data: likedRepository} = await api.post(`repositories/${id}/like`)
+
+    const repositoriesUpdated = repositories.map(function(repository) {
+      if(repository.id === id) {
+        return likedRepository
+      }
+      return repository
+    })
+
+    setRepositories(repositoriesUpdated)
+  }
+
   return (
     <>
       <StatusBar barStyle="light-content" backgroundColor="#7159c1" />
@@ -32,7 +45,7 @@ export default function App() {
 
         <FlatList
           data={repositories}
-          keyExtractor={repositories => repositories.id}
+          keyExtractor={repository => repository.id}
           renderItem={
             ({ item: repository }) => (
               <View style={styles.repositoryContainer}>
@@ -49,7 +62,29 @@ export default function App() {
                       </Text>
                     </>
                   )} />
-                <Likes id={repository.id} currentLikes={repository.likes} />
+                < View style={styles.likesContainer}>
+                  {repository.likes === 1 &&
+                    <Text
+                      style={styles.likeText}
+                      // Remember to replace "1" below with repository ID: {`repository-likes-${repository.id}`}
+                      testID={`repository-likes-${repository.id}`}>
+                      {repository.likes} curtida
+                    </Text>}
+                  {repository.likes !== 1 &&
+                    <Text
+                      style={styles.likeText}
+                      // Remember to replace "1" below with repository ID: {`repository-likes-${repository.id}`}
+                      testID={`repository-likes-${repository.id}`}>
+                      {repository.likes} curtidas
+                    </Text>}
+                </View>
+                <TouchableOpacity
+                  style={styles.button}
+                  onPress={() => handleLikeRepository(repository.id)}
+                  // Remember to replace "1" below with repository ID: {`like-button-${repository.id}`}
+                  testID={`like-button-${repository.id}`}>
+                  <Text style={styles.buttonText}>Curtir</Text>
+                </TouchableOpacity>
               </View>
             )
           } />
@@ -87,5 +122,27 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 5,
     color: "#fff",
+  },
+  likesContainer: {
+    marginTop: 15,
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  likeText: {
+    fontSize: 14,
+    fontWeight: "bold",
+    marginRight: 10,
+  },
+  button: {
+    marginTop: 10,
+  },
+  buttonText: {
+    fontSize: 14,
+    fontWeight: "bold",
+    marginRight: 10,
+    color: "#fff",
+    borderRadius: 4,
+    backgroundColor: "#7159c1",
+    padding: 15,
   },
 });
