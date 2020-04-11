@@ -7,7 +7,6 @@ import {
   Text,
   StatusBar,
   StyleSheet,
-  TouchableOpacity,
 } from "react-native";
 
 import Likes from './components/Likes'
