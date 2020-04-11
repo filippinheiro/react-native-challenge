@@ -42,7 +42,6 @@ export default function App() {
     <>
       <StatusBar barStyle="light-content" backgroundColor="#7159c1" />
       <SafeAreaView style={styles.container}>
-
         <FlatList
           data={repositories}
           keyExtractor={repository => repository.id}
@@ -50,7 +49,6 @@ export default function App() {
             ({ item: repository }) => (
               <View style={styles.repositoryContainer}>
                 <Text style={styles.repository}>{repository.title}</Text>
-
                 <FlatList
                   style={styles.techsContainer}
                   data={repository.techs}
@@ -63,20 +61,12 @@ export default function App() {
                     </>
                   )} />
                 < View style={styles.likesContainer}>
-                  {repository.likes === 1 &&
                     <Text
                       style={styles.likeText}
                       // Remember to replace "1" below with repository ID: {`repository-likes-${repository.id}`}
                       testID={`repository-likes-${repository.id}`}>
-                      {repository.likes} curtida
-                    </Text>}
-                  {repository.likes !== 1 &&
-                    <Text
-                      style={styles.likeText}
-                      // Remember to replace "1" below with repository ID: {`repository-likes-${repository.id}`}
-                      testID={`repository-likes-${repository.id}`}>
-                      {repository.likes} curtidas
-                    </Text>}
+                      {repository.likes} curtida{repository.likes === 1 ? '' : 's'}
+                    </Text>
                 </View>
                 <TouchableOpacity
                   style={styles.button}
